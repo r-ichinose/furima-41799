@@ -1,3 +1,5 @@
+require 'faker'
+
 FactoryBot.define do
   factory :user do
     nickname               { 'テストユーザー' }

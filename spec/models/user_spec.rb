@@ -36,7 +36,7 @@ RSpec.describe User, type: :model do
       it 'emailに@が含まれていない場合は登録できない' do
         @user.email = 'testexample.com'
         @user.valid?
-        expect(@user.errors.full_messages).to include("Email must contain @ and be valid")
+        expect(@user.errors.full_messages).to include("Email is invalid")
       end
 
       it 'passwordが空では登録できない' do
@@ -85,10 +85,22 @@ RSpec.describe User, type: :model do
         expect(@user.errors.full_messages).to include("First name can't be blank")
       end
 
+      it 'first_nameに半角文字が含まれていると登録できない' do
+        @user.first_name = 'Taro1'
+        @user.valid?
+        expect(@user.errors.full_messages).to include('First name must be full-width characters')
+      end
+
       it 'last_nameが空では登録できない' do
         @user.last_name = ''
         @user.valid?
         expect(@user.errors.full_messages).to include("Last name can't be blank")
+      end
+
+      it 'last_nameに半角文字が含まれていると登録できない' do
+        @user.last_name = 'Yamada1'
+        @user.valid?
+        expect(@user.errors.full_messages).to include('Last name must be full-width characters')
       end
 
       it 'first_name_kanaが空では登録できない' do
@@ -97,10 +109,22 @@ RSpec.describe User, type: :model do
         expect(@user.errors.full_messages).to include("First name kana can't be blank")
       end
 
+      it 'first_name_kanaにカタカナ以外の文字が含まれていると登録できない' do
+        @user.first_name_kana = 'たろう'
+        @user.valid?
+        expect(@user.errors.full_messages).to include('First name kana must be full-width katakana characters')
+      end
+
       it 'last_name_kanaが空では登録できない' do
         @user.last_name_kana = ''
         @user.valid?
         expect(@user.errors.full_messages).to include("Last name kana can't be blank")
+      end
+
+      it 'last_name_kanaにカタカナ以外の文字が含まれていると登録できない' do
+        @user.last_name_kana = 'やまだ'
+        @user.valid?
+        expect(@user.errors.full_messages).to include('Last name kana must be full-width katakana characters')
       end
 
       it 'birth_dateが空では登録できない' do
