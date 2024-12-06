@@ -62,7 +62,7 @@ RSpec.describe Item, type: :model do
 
     context '関連IDのバリデーション' do
       it 'category_idが空の場合は無効であること' do
-        @item = build(:item, category_id: nil)
+        @item.category_id = nil
         @item.valid?
         expect(@item.errors[:category_id]).to include("can't be blank")
       end
@@ -73,27 +73,26 @@ RSpec.describe Item, type: :model do
         expect(@item.errors[:category_id]).to include('must be greater than 0')
       end
 
-      # 他の関連IDについても同様のテストを追加
       it 'condition_idが空の場合は無効であること' do
-        @item = build(:item, condition_id: nil)
+        @item.condition_id = nil
         @item.valid?
         expect(@item.errors[:condition_id]).to include("can't be blank")
       end
 
       it 'shipping_fee_idが空の場合は無効であること' do
-        @item = build(:item, shipping_fee_id: nil)
+        @item.shipping_fee_id = nil
         @item.valid?
         expect(@item.errors[:shipping_fee_id]).to include("can't be blank")
       end
 
       it 'prefecture_idが空の場合は無効であること' do
-        @item = build(:item, prefecture_id: nil)
+        @item.prefecture_id = nil
         @item.valid?
         expect(@item.errors[:prefecture_id]).to include("can't be blank")
       end
 
       it 'shipping_day_idが空の場合は無効であること' do
-        @item = build(:item, shipping_day_id: nil)
+        @item.shipping_day_id = nil
         @item.valid?
         expect(@item.errors[:shipping_day_id]).to include("can't be blank")
       end
