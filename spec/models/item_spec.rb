@@ -67,10 +67,10 @@ RSpec.describe Item, type: :model do
         expect(@item.errors[:category_id]).to include("can't be blank")
       end
 
-      it 'category_idが0以下の場合は無効であること' do
-        @item = build(:item, category_id: 0)
+      it 'category_idが1以下の場合は無効であること' do
+        @item = build(:item, category_id: 1)
         @item.valid?
-        expect(@item.errors[:category_id]).to include('must be greater than 0')
+        expect(@item.errors[:category_id]).to include('must be greater than 1')
       end
 
       it 'condition_idが空の場合は無効であること' do
