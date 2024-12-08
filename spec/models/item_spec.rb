@@ -11,25 +11,6 @@ RSpec.describe Item, type: :model do
     context '正常系' do
 
       it '全ての値が適切に設定されている場合、保存が成功すること' do
-        # テスト用のItemを作成
-        item = FactoryBot.build(:item, 
-          name: 'テスト商品',
-          description: '商品の詳細な説明',
-          price: 1000,
-          category_id: 2,
-          condition_id: 2,
-          shipping_fee_id: 2,
-          prefecture_id: 2,
-          shipping_day_id: 2
-        )
-      
-        # 画像を添付
-        item.image.attach(
-          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.png')), 
-          filename: 'test_image.png', 
-          content_type: 'image/png'
-        )
-      
         # 保存のテスト
         expect(item).to be_valid
         expect(item.save).to be true
@@ -118,6 +99,24 @@ RSpec.describe Item, type: :model do
       it 'shipping_day_idが1以下の場合は無効であること' do
         item.shipping_day_id = 1
         expect(item).to_not be_valid
+      end
+
+      it '画像が添付されていない場合は無効であること' do
+        # 画像を削除
+        item.image.purge
+      
+        # 無効であることを確認
+        expect(item).to_not be_valid
+        expect(item.errors[:image]).to include("can't be blank")
+      end
+
+      it 'userが紐づいていない場合は無効であること' do
+        # userを削除（nil化）
+        item.user = nil
+      
+        # 無効であることを確認
+        expect(item).to_not be_valid
+        expect(item.errors[:user]).to include("must exist")
       end
     end
   end
