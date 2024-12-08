@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Item, type: :model do
-  let(:user) { FactoryBot.create(:user) }
-  let(:item) { FactoryBot.build(:item, user: user) }
+  let(:item) { FactoryBot.build(:item) }
 
   before do
     item.image.attach(io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.png')), filename: 'test_image.png', content_type: 'image/png')
@@ -10,6 +9,33 @@ RSpec.describe Item, type: :model do
 
   describe 'バリデーション' do
     context '正常系' do
+
+      it '全ての値が適切に設定されている場合、保存が成功すること' do
+        # テスト用のItemを作成
+        item = FactoryBot.build(:item, 
+          name: 'テスト商品',
+          description: '商品の詳細な説明',
+          price: 1000,
+          category_id: 2,
+          condition_id: 2,
+          shipping_fee_id: 2,
+          prefecture_id: 2,
+          shipping_day_id: 2
+        )
+      
+        # 画像を添付
+        item.image.attach(
+          io: File.open(Rails.root.join('spec', 'fixtures', 'files', 'test_image.png')), 
+          filename: 'test_image.png', 
+          content_type: 'image/png'
+        )
+      
+        # 保存のテスト
+        expect(item).to be_valid
+        expect(item.save).to be true
+        expect(item.errors.full_messages).to be_empty
+      end
+
       it '名前が40文字の場合、有効であること' do
         item.name = 'A' * 40
         expect(item).to be_valid
