@@ -10,7 +10,6 @@ class Item < ApplicationRecord
 
   has_one_attached :image
 
-  validates :user, presence: true
   validates :image, presence: true
   validates :name, presence: true, length: { maximum: 40 }
   validates :description, presence: true, length: { maximum: 1000 }
