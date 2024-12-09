@@ -29,7 +29,7 @@
       <% if user_signed_in? %>
         <%# if @item.sold_out? %>
           <!-- 売却済みの商品には、いかなるボタンも表示しない -->
-          <% else %>
+          <%# else %>
           <% if @item.user == current_user %>
             <!-- ログイン状態且つ自身が出品した販売中商品の場合にのみ表示 -->
             <%= link_to "商品の編集", "#", method: :get, class: "item-red-btn" %>
