@@ -11,7 +11,6 @@ class ItemsController < ApplicationController
 
   def show
     @item = Item.find(params[:id])
-    @items = Item.where(category_id: @item.category_id)
   end
 
   def create
