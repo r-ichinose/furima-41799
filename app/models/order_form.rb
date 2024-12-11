@@ -3,15 +3,17 @@ class OrderForm
 
   attr_accessor :user_id, :item_id, :post_code, :prefecture_id, :city, :address, :building, :phone_number, :token
 
-  validates :user_id, :item_id, :postal_code, :prefecture_id, :city, :address, :phone_number, :token, presence: true
-  validates :postal_code, format: { with: /\A\d{3}-\d{4}\z/ } # 郵便番号の形式をチェック
-  validates :phone_number, format: { with: /\A\d{10,11}\z/ } # 電話番号の形式をチェック
+  validates :user_id, :item_id, :post_code, :prefecture_id, :city, :address, :phone_number, :token, presence: { message: "can't be blank" }
+  validates :prefecture_id, presence: { message: "can't be blank" }, numericality: { other_than: 0, message: "can't be blank" }
+  validates :post_code, format: { with: /\A\d{3}-\d{4}\z/, message: "is invalid. Enter it as follows (e.g. 123-4567)" }
+  validates :phone_number, format: { with: /\A\d{10,11}\z/, message: "is invalid. Input only number" },
+                            length: { in: 10..11, message: "is too short" }
 
   def save
-    # 注文情報の保存
+    return false unless valid?
+
     order = Order.create(user_id: user_id, item_id: item_id)
 
-    # 配送先情報の保存
     ShippingAddress.create(
       order_id: order.id,
       post_code: post_code,
