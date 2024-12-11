@@ -1,9 +1,5 @@
-class Order
+class OrderForm
   include ActiveModel::Model
-
-  belongs_to :user
-  belongs_to :item
-  has_one :shipping_address
 
   attr_accessor :user_id, :item_id, :shipping_address, :postal_code, :city, :address, :phone_number, :token
 
