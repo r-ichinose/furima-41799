@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  before_action :set_item, only: [:index, :create]
+  
   def index
     @item = Item.find(params[:item_id])
     @order = OrderForm.new
@@ -20,6 +22,6 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order_form).permit(:card_number, :expiration_date, :cvc).merge(user_id: current_user.id, item_id: @item.id)
+    params.require(:order_form).permit(:post_code, :prefecture_id, :city, :address, :building, :phone_number, :card_number, :expiration_date, :cvc, :token).merge(user_id: current_user.id, item_id: @item.id)
   end
 end
