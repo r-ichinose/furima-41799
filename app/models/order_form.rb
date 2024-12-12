@@ -12,16 +12,16 @@ class OrderForm
   def save
     return false unless valid?
 
-    order = Order.create(user_id: user_id, item_id: item_id)
-
-    ShippingAddress.create(
-      order_id: order.id,
-      post_code: post_code,
-      prefecture_id: prefecture_id,
-      city: city,
-      address: address,
-      building: building,
-      phone_number: phone_number
-    )
+    ActiveRecord::Base.transaction do
+      order = Order.create(user_id: user_id, item_id: item_id)
+      ShippingAddress.create(
+        post_code: post_code, prefecture_id: prefecture_id, city: city, address: address, building: building, phone_number: phone_number, order_id: order.id
+      )
+    end
+    true
+  rescue => e
+    puts e.message
+    puts e.backtrace
+    false
   end
 end
