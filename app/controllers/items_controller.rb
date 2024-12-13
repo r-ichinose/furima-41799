@@ -2,6 +2,7 @@ class ItemsController < ApplicationController
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
   before_action :set_item, only: [:edit, :update, :show, :destroy]
   before_action :check_owner, only: [:edit, :update, :destroy]
+  before_action :redirect_if_sold_out, only: [:edit, :update]
 
   def index
     @items = Item.order(created_at: :desc)
@@ -22,7 +23,6 @@ class ItemsController < ApplicationController
       render :new, status: :unprocessable_entity
     end
   end
-
 
   def edit
   end
@@ -57,6 +57,12 @@ class ItemsController < ApplicationController
   def check_owner
     unless current_user == @item.user
       redirect_to root_path, alert: "You are not authorized to edit this item."
+    end
+  end
+
+  def redirect_if_sold_out
+    if @item.order.present?
+      redirect_to root_path, alert: "売却済みの商品は編集できません。"
     end
   end
 end

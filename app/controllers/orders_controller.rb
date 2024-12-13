@@ -1,6 +1,8 @@
 class OrdersController < ApplicationController
   before_action :set_item, only: [:index, :create]
-  
+  before_action :authenticate_user!
+  before_action :redirect_if_invalid_access, only: [:index, :create]
+
   def index
     gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
     @order = OrderForm.new
@@ -11,17 +13,23 @@ class OrdersController < ApplicationController
     if @order.valid?
       pay_item
       @order.save
-      return redirect_to root_path
+      redirect_to root_path, notice: '購入が完了しました。'
     else
       gon.public_key = ENV["PAYJP_PUBLIC_KEY"]
       render 'index', status: :unprocessable_entity
     end
   end
-  
+
   private
 
   def set_item
     @item = Item.find(params[:item_id])
+  end
+
+  def redirect_if_invalid_access
+    if @item.sold_out? || current_user == @item.user
+      redirect_to root_path, alert: "この商品は購入できません。"
+    end
   end
 
   def order_params
