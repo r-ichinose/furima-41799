@@ -23,6 +23,8 @@
     </div>
     <%# /支払額の表示 %>
 
+    <%= include_gon %>
+
     <%= form_with id: 'charge-form', class: 'transaction-form-wrap', local: true, url: item_orders_path(@item), model: @order, data: { turbo: false } do |f| %>
       <%= render 'shared/error_messages', model: f.object %>
 
