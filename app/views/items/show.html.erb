@@ -7,15 +7,13 @@
       <%= @item.name %>
     </h2>
     <div class="item-img-content">
+      <% if @item.sold_out? %>
+        <div class="sold-out">
+          <span>Sold Out!!</span>
+        </div>
+      <% end %>
       <%= image_tag @item.image, class: "item-box-img" %>
     </div>
-  
-    <%# if @item.sold_out? %>
-      <div class="sold-out">
-        <span>Sold Out!!</span>
-      </div>
-    <%# end %>
-  </div>
 
     <div class="item-price-box">
       <span class="item-price">
@@ -25,26 +23,21 @@
         <%= @item.shipping_fee.name %>
       </span>
     </div>
-    
-      <% if user_signed_in? %>
-        <%# if @item.sold_out? %>
-          <!-- 売却済みの商品には、いかなるボタンも表示しない -->
-          <%# else %>
-          <% if @item.user == current_user %>
-            <!-- ログイン状態且つ自身が出品した販売中商品の場合にのみ表示 -->
-            <%= link_to "商品の編集", edit_item_path, method: :get, class: "item-red-btn" %>
-            <p class="or-text">or</p>
-            <%= link_to "削除", item_path(@item), data: { turbo_method: :delete, confirm: '本当に削除しますか？' }, class: "item-destroy" %>
-            <% else %>
-            <!-- ログイン状態且つ自身が出品していない販売中商品の場合にのみ表示 -->
-            <%= link_to "購入画面に進む", "#", class: "item-red-btn" %>
-          <% end %>
-        <%# end %>
+
+    <% if user_signed_in? && !@item.sold_out? %>
+      <% if @item.user == current_user %>
+        <%= link_to "商品の編集", edit_item_path(@item), class: "item-red-btn" %>
+        <p class="or-text">or</p>
+        <%= link_to "削除", item_path(@item), data: { turbo_method: :delete, confirm: '本当に削除しますか？' }, class: "item-destroy" %>
+      <% else %>
+        <%= link_to "購入画面に進む", item_orders_path(@item), data: { turbo: false }, class: "item-red-btn" %>
       <% end %>
+    <% end %>
 
     <div class="item-explain-box">
       <span><%= @item.description %></span>
     </div>
+
     <table class="detail-table">
       <tbody>
         <tr>
@@ -73,6 +66,7 @@
         </tr>
       </tbody>
     </table>
+
     <div class="option">
       <div class="favorite-btn">
         <%= image_tag "star.png", class: "favorite-star-icon", width: "20", height: "20" %>
@@ -84,8 +78,8 @@
       </div>
     </div>
   </div>
-  <%# /商品の概要 %>
 
+  <%# /商品の概要 %>
   <div class="comment-box">
     <form>
       <textarea class="comment-text"></textarea>
@@ -96,10 +90,11 @@
       </p>
       <button type="submit" class="comment-btn">
         <%= image_tag "comment.png", class: "comment-flag-icon", width: "20", height: "25" %>
-        <span>コメントする<span>
+        <span>コメントする</span>
       </button>
     </form>
   </div>
+
   <div class="links">
     <a href="#" class="change-item-btn">
       ＜ 前の商品
