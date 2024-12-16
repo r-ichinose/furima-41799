@@ -2,17 +2,9 @@ require 'rails_helper'
 
 RSpec.describe OrderForm, type: :model do
   before do
-    @order_form = OrderForm.new(
-      user_id: 1, 
-      item_id: 1,
-      post_code: '123-4567',
-      prefecture_id: 1,
-      city: 'Tokyo',
-      address: 'Shibuya 1-1-1',
-      building: 'LA Building',
-      phone_number: '09012345678',
-      token: 'tok_abcdefghijk00000000000000000'
-    )
+    @user = FactoryBot.create(:user)
+    @item = FactoryBot.create(:item, user: @user)
+    @order_form = FactoryBot.build(:order_form, user_id: @user.id, item_id: @item.id)
   end
 
   describe 'OrderFormのバリデーション' do
@@ -28,6 +20,21 @@ RSpec.describe OrderForm, type: :model do
 
       it 'phone_numberが10桁でも有効である' do
         @order_form.phone_number = '0901234567'
+        expect(@order_form).to be_valid
+      end
+
+      it 'prefecture_idが1以上の値であれば有効である' do
+        @order_form.prefecture_id = 1
+        expect(@order_form).to be_valid
+      end
+
+      it 'post_codeが正しい形式であれば有効である' do
+        @order_form.post_code = '123-4567'
+        expect(@order_form).to be_valid
+      end
+
+      it 'phone_numberが11桁の場合に有効である' do
+        @order_form.phone_number = '09012345678'
         expect(@order_form).to be_valid
       end
     end
@@ -97,6 +104,18 @@ RSpec.describe OrderForm, type: :model do
         @order_form.token = nil
         @order_form.valid?
         expect(@order_form.errors.full_messages).to include("Token can't be blank")
+      end
+
+      it 'phone_numberが12桁以上だと無効である' do
+        @order_form.phone_number = '090123456789'
+        @order_form.valid?
+        expect(@order_form.errors.full_messages).to include("Phone number is invalid. Input only number")
+      end
+
+      it 'phone_numberに英数字以外が含まれていると無効である' do
+        @order_form.phone_number = '090-1234-5678'
+        @order_form.valid?
+        expect(@order_form.errors.full_messages).to include("Phone number is invalid. Input only number")
       end
     end
   end
